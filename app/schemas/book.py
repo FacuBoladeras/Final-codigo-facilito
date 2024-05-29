@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
-class BookBase(BaseModel):
+class BookCreate(BaseModel):
     title: str
     author: str
     quantity: int
 
-class BookCreate(BookBase):
-    pass
-
-class BookRead(BookBase):
+class BookRead(BaseModel):
     id: int
+    title: str
+    author: str
+    quantity: int
 
     class Config:
-        orm_mode = True
+        orm_mode: True

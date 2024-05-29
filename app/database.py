@@ -1,5 +1,5 @@
 from peewee import MySQLDatabase
-from app.config import settings
+from .config import settings
 
 # Conexión a la base de datos
 database = MySQLDatabase(

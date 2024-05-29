@@ -1,19 +1,20 @@
 from fastapi import FastAPI
-from app.routers import books, customers
-from app.database import connect_db, close_db, database
-from app.models.book import Book
-from app.models.customer import Customer
+from .routers.books import books_R
+from .models.books import Book 
+from .database import connect_db, close_db, database
+from .models.books import Book
+
+# uvicorn app.main:app --reload
 
 app = FastAPI()
 
-app.include_router(books.router)
-app.include_router(customers.router)
+app.include_router(books_R)
 
 @app.on_event("startup")
 def startup():
     connect_db()
     # Crear tablas si no existen
-    database.create_tables([Book, Customer], safe=True)
+    database.create_tables([Book], safe=True)
 
 @app.on_event("shutdown")
 def shutdown():
