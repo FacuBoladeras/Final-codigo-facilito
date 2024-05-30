@@ -5,6 +5,7 @@ class Book(Model):
     title = CharField()
     author = CharField()
     quantity = IntegerField()
+    gender = CharField()
 
     class Meta:
         database = database
