@@ -1,16 +1,16 @@
 from pydantic import BaseModel
 
 class CustomerCreate(BaseModel):
-    name: str
+    username: str
     email: str
-    phone: int
+    password: str
 
 
 class CustomerRead(BaseModel):
     id: int
-    name: str
+    username: str
     email: str
-    phone: int
+    password: str
 
     class Config:
         orm_mode: True

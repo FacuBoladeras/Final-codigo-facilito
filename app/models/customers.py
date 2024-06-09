@@ -1,10 +1,12 @@
 from peewee import Model, CharField, IntegerField
 from app.database import database
 
+
 class Customer(Model):
-    name = CharField()
-    email = CharField()
-    phone = IntegerField()
+    username = CharField(unique=True)
+    email = CharField(unique=True)
+    password = CharField()
+
 
     class Meta:
         database = database

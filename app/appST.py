@@ -8,29 +8,32 @@ st.title("Library Management System")
 
 # Function to get books from the API
 def get_books():
-    response = requests.get(f"{BASE_URL}/books/")
-    if response.status_code == 200:
+    try:
+        response = requests.get(f"{BASE_URL}/books/")
+        response.raise_for_status()
         return response.json()
-    else:
-        st.error("Failed to fetch books")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error fetching books: {e}")
         return []
 
 # Function to get a single book by ID
 def get_book(book_id):
-    response = requests.get(f"{BASE_URL}/book/{book_id}")
-    if response.status_code == 200:
+    try:
+        response = requests.get(f"{BASE_URL}/book/{book_id}")
+        response.raise_for_status()
         return response.json()
-    else:
-        st.error("Book not found")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error fetching book with ID {book_id}: {e}")
         return None
 
 # Function to create a new book
 def create_book(book_data):
-    response = requests.post(f"{BASE_URL}/books/", json=book_data)
-    if response.status_code == 200:
+    try:
+        response = requests.post(f"{BASE_URL}/books/", json=book_data)
+        response.raise_for_status()
         st.success("Book created successfully")
-    else:
-        st.error("Failed to create book")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error creating book: {e}")
 
 # Main menu
 menu = st.sidebar.selectbox("Menu", ["View Books", "Add Book", "View Book by ID"])
