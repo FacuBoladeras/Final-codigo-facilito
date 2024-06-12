@@ -6,7 +6,7 @@ from .models.customers import Customer
 from .database import connect_db, close_db, database
 from .models.books import Book
 
-# uvicorn app.main:app --reload
+# uvicorn app.main:app --reload --port 8001
 
 app = FastAPI()
 
