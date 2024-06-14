@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers.books import books_R
+from .routers.books import books_R, booksF
 from .routers.customers import customer_R
 from .models.books import Book 
 from .models.customers import Customer
@@ -12,6 +12,8 @@ app = FastAPI()
 
 app.include_router(books_R)
 app.include_router(customer_R)
+app.include_router(booksF, prefix="/noauth", tags=["books_no_auth"])
+
 
 @app.on_event("startup")
 def startup():

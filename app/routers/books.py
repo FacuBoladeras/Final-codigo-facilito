@@ -13,11 +13,37 @@ def create_book(book: BookCreate):
 
 @books_R.get("/books/", response_model=List[BookRead], dependencies=[Depends(verify_token)])
 def read_books(username: str = Depends(verify_token)):
-    books = Book.select()
-    return list(books)
+    try:
+        books = Book.select()
+        return list(books)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 
 @books_R.get("/books/{id}", response_model=BookRead, dependencies=[Depends(verify_token)])
 def read_book(id: int, username: str = Depends(verify_token)):
+    try:
+        book = Book.get(Book.id == id)
+        return book
+    except Book.DoesNotExist:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+
+# Nuevo enrutador para endpoints que no requieren autenticación
+booksF = APIRouter()
+
+
+@booksF.get("/books/", response_model=List[BookRead])
+async def read_books():
+    try:
+        books = Book.select()
+        return list(books)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@booksF.get("/booksF/{id}", response_model=BookRead)
+def read_book_without_auth(id: int):
     try:
         book = Book.get(Book.id == id)
         return book
