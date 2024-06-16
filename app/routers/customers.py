@@ -19,7 +19,6 @@ def read_customers(token: str = Depends(oauth2_scheme)):
     return list(customers)
 
 
-
 @customer_R.post("/customerP/", response_model=CustomerRead)
 def create_customer(customer: CustomerCreate):
     # Verificar si el cliente ya está registrado en la base de datos de Library

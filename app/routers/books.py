@@ -1,18 +1,26 @@
-from fastapi import APIRouter, HTTPException,Depends
-from app.models.books import Book 
+from fastapi import APIRouter, HTTPException, Depends, Request
+from app.models.books import Book
 from app.schemas.book import BookCreate, BookRead
 from typing import List
 from app.utils import verify_token
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse, JSONResponse
 
 books_R = APIRouter()
+templates = Jinja2Templates(directory="app/routers/templates")
+
+# Endpoints que requieren autenticación
 
 @books_R.post("/books/", response_model=BookRead)
 def create_book(book: BookCreate):
-    db_book = Book.create(**book.dict())
-    return db_book
+    try:
+        db_book = Book.create(**book.dict())
+        return db_book
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-@books_R.get("/books/", response_model=List[BookRead], dependencies=[Depends(verify_token)])
-def read_books(username: str = Depends(verify_token)):
+@books_R.get("/books/", response_model=List[BookRead])
+def read_books(token: str = Depends(verify_token)):
     try:
         books = Book.select()
         return list(books)
@@ -20,32 +28,28 @@ def read_books(username: str = Depends(verify_token)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Endpoints que no requieren autenticación
 
-@books_R.get("/books/{id}", response_model=BookRead, dependencies=[Depends(verify_token)])
-def read_book(id: int, username: str = Depends(verify_token)):
-    try:
-        book = Book.get(Book.id == id)
-        return book
-    except Book.DoesNotExist:
-        raise HTTPException(status_code=404, detail="Book not found")
-
-
-# Nuevo enrutador para endpoints que no requieren autenticación
 booksF = APIRouter()
 
-
-@booksF.get("/books/", response_model=List[BookRead])
-async def read_books():
+@books_R.get("/GetBooks/", response_class=HTMLResponse)
+async def read_books_html(request: Request):
     try:
         books = Book.select()
-        return list(books)
+        return templates.TemplateResponse("books.html", {
+            "request": request,
+            "title": "Books",
+            "books": list(books)
+        })
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-@booksF.get("/booksF/{id}", response_model=BookRead)
-def read_book_without_auth(id: int):
+
+
+@books_R.get("/GetBooksJ/", response_class=JSONResponse)
+async def read_books_json():
     try:
-        book = Book.get(Book.id == id)
-        return book
-    except Book.DoesNotExist:
-        raise HTTPException(status_code=404, detail="Book not found")
+        books = Book.select()
+        books_list = [{"title": book.title, "author": book.author} for book in books]
+        return JSONResponse(content={"books": books_list})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

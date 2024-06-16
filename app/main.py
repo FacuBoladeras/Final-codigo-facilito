@@ -10,10 +10,10 @@ from .models.books import Book
 
 app = FastAPI()
 
-app.include_router(books_R)
-app.include_router(customer_R)
-app.include_router(booksF, prefix="/noauth", tags=["books_no_auth"])
 
+app.include_router(customer_R)
+app.include_router(books_R, prefix="/auth")
+app.include_router(booksF, prefix="/noauth")
 
 @app.on_event("startup")
 def startup():
