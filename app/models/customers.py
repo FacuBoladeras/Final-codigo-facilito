@@ -7,6 +7,6 @@ class Customer(Model):
     email = CharField(unique=True)
     password = CharField()
 
-
     class Meta:
         database = database
+        

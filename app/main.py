@@ -5,11 +5,18 @@ from .models.books import Book
 from .models.customers import Customer
 from .database import connect_db, close_db, database
 from .models.books import Book
-
+from fastapi.middleware.cors import CORSMiddleware
 # uvicorn app.main:app --reload --port 8001
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Cambia esto según sea necesario
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(customer_R)
 app.include_router(books_R, prefix="/auth")

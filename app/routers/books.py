@@ -49,7 +49,7 @@ async def read_books_html(request: Request):
 async def read_books_json():
     try:
         books = Book.select()
-        books_list = [{"title": book.title, "author": book.author} for book in books]
+        books_list = [{"title": book.title, "author": book.author, "gender": book.gender} for book in books]
         return JSONResponse(content={"books": books_list})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
