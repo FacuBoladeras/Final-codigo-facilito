@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fastapi import APIRouter, HTTPException, Depends, Request, Query
 from app.models.books import Book
 from app.schemas.book import BookCreate, BookRead
 from typing import List
@@ -19,37 +19,15 @@ def create_book(book: BookCreate):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@books_R.get("/books/", response_model=List[BookRead])
-def read_books(token: str = Depends(verify_token)):
+
+@books_R.get("/GetBooksJ/", response_model=List[BookRead])
+def read_books(token: str = Query(..., description="JWT Token")):
     try:
+        # Verificar el token
+        user = verify_token(token)        
         books = Book.select()
         return list(books)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# Endpoints que no requieren autenticación
-
-booksF = APIRouter()
-
-@books_R.get("/GetBooks/", response_class=HTMLResponse)
-async def read_books_html(request: Request):
-    try:
-        books = Book.select()
-        return templates.TemplateResponse("books.html", {
-            "request": request,
-            "title": "Books",
-            "books": list(books)
-        })
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@books_R.get("/GetBooksJ/", response_class=JSONResponse)
-async def read_books_json():
-    try:
-        books = Book.select()
-        books_list = [{"title": book.title, "author": book.author, "gender": book.gender} for book in books]
-        return JSONResponse(content={"books": books_list})
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))

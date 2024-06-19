@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routers.books import books_R, booksF
+from .routers.books import books_R
 from .routers.customers import customer_R
 from .models.books import Book 
 from .models.customers import Customer
@@ -20,7 +20,7 @@ app.add_middleware(
 
 app.include_router(customer_R)
 app.include_router(books_R, prefix="/auth")
-app.include_router(booksF, prefix="/noauth")
+
 
 @app.on_event("startup")
 def startup():
