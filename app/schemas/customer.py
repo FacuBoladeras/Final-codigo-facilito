@@ -17,3 +17,6 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     
+class CustomerUpdateRequest(BaseModel):
+    username: str = None
+    email: EmailStr = None

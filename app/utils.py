@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Query
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
@@ -44,7 +44,12 @@ def verify_token(token: str):
 
     return user
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_token(token: str = Depends(oauth2_scheme), query_token: str = Query(None)) -> str:
+    if query_token:
+        return query_token
+    return token
+
+def get_current_user(token: str = Depends(get_token)):
     return verify_token(token)
 
 def authenticate_user(username: str, password: str) -> Customer:
