@@ -11,7 +11,7 @@ from peewee import DoesNotExist
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8000/auth/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="http://localhost:8000/auth/token")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
